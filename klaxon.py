@@ -1,7 +1,7 @@
 from microbit import *
 import music
 import radio
-radio.config(group=23)
+radio.config(group=32)
 radio.on()
 
 while True:
@@ -12,6 +12,7 @@ while True:
                            '36963:'
                            '03630:'
                            '00300'))
+    
 
             
     
