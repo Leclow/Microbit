@@ -1,7 +1,7 @@
 # Imports go at the top
 from microbit import *
 import radio
-radio.config(group=69)
+radio.config(group=32)
 radio.on()
 
 while True:
