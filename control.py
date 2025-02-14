@@ -12,9 +12,9 @@ while True:
     minimalY = 250
     if x_strength > minimalX:
         display.show("D")
-        #need to send with radio the direction and the speed calculated
+        # need to send with radio the direction and the speed calculated
         radio.send('forward')
-        radio.send('100')
+        radio.send('1')
     elif x_strength < -minimalX:
         display.show("G")
     elif y_strength > minimalY:

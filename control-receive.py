@@ -6,11 +6,12 @@ radio.on()
 
 # Code in a 'while True:' loop repeats forever
 while True:
-    message = radio.receive()
-    if message:
-        if message == 'forward':
-            message = radio.receive()
-            if message:
-                display.scroll(message)
+    direction = radio.receive()
+    if direction:
+        if direction == 'forward':
+            speed = radio.receive()
+            if speed:
+                Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, int(speed))
+
         elif message != 'klax':
             display.show(Image.BUTTERFLY)
