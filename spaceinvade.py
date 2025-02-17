@@ -57,3 +57,4 @@ def on_forever3():
         player.delete()
         game.game_over()
 basic.forever(on_forever3)
+#si qu'elqu'un trouve ça trop dur....
