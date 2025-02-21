@@ -122,3 +122,4 @@ basic.forever(on_forever)
 
 
 ce truc est impossible, je sais pas comment faire et quand j'ai reussi en block, il voulais plus le renvoyer en python, ça ma fait rager j'ai abandonner, le module radio c un enfer
+# Grosse Force alors, si j'ai le temps je peux checker en vif
