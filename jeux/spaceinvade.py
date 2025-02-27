@@ -58,3 +58,4 @@ def on_forever3():
         game.game_over()
 basic.forever(on_forever3)
 #si qu'elqu'un trouve ça trop dur....
+# C fini ou pas si je peux aider mp
