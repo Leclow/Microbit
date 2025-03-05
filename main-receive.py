@@ -141,3 +141,8 @@ def lightControl(receivedString):
 
 while True:
     radio.on_received_string(lightControl)
+
+
+
+
+

@@ -21,5 +21,5 @@ for char in range(len(vs)):
             led.toggle(4 - x2, 4 - y2)
         frame2 = frame2 >> 1
     # si quelq'un lit, ça, vrm merci infiniment a reddit ! j'ai commencer a faire ça frame par frame, et j'ai vrm cru die...
-    # Nice de raconter sa vie :)
+    # Nice de raconter sa vie :D
     basic.pause(((1000 / 15.97) * count2) - (input.running_time() - now2))

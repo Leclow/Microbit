@@ -1,7 +1,7 @@
 # Imports go at the top
 from microbit import *
 import radio
-radio.config(group=32)
+radio.config(group=44)
 radio.on()
 
 while True:
@@ -11,8 +11,3 @@ while True:
     if button_b.was_pressed():
         radio.send('disco')
         display.scroll('B')
-    while True:
-        message = radio.receive()
-        if message == 'light':
-
-        if message == 'disco':
