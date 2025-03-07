@@ -65,8 +65,8 @@ lightright = False
 lightleft = False
 Kitronik_Move_Motor.turn_radius(Kitronik_Move_Motor.TurnRadii.TIGHT)
 
-
-
-
-
-#Let's go ca fonctionne
+def on_forever():
+    Kitronik_Move_Motor.set_ultrasonic_units(Kitronik_Move_Motor.Units.CENTIMETERS)
+    if Kitronik_Move_Motor.measure() < 20:
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE, 10)
+basic.forever(on_forever)
