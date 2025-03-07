@@ -1,64 +1,72 @@
-def lightright():
-    while lightleft2:
-        moveMotorZIP.set_zip_led_color(1,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
-        moveMotorZIP.set_zip_led_color(2,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.YELLOW))
-        moveMotorZIP.show()
-        basic.pause(500)
-        moveMotorZIP.set_zip_led_color(1,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.BLACK))
-        moveMotorZIP.set_zip_led_color(2,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.BLACK))
-        moveMotorZIP.show()
-        basic.pause(500)
-def lightleft():
-    while lightright2:
-        moveMotorZIP.set_zip_led_color(0,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
-        moveMotorZIP.set_zip_led_color(3,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.YELLOW))
-        moveMotorZIP.show()
-        basic.pause(500)
-        moveMotorZIP.set_zip_led_color(0,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.BLACK))
-        moveMotorZIP.set_zip_led_color(3,
-            Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.BLACK))
-        moveMotorZIP.show()
-        basic.pause(500)
+def lightright2():
+    moveMotorZIP.set_zip_led_color(0,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
+    moveMotorZIP.set_zip_led_color(3,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.RED))
+    moveMotorZIP.set_zip_led_color(1,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.YELLOW))
+    moveMotorZIP.set_zip_led_color(2,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.YELLOW))
+    moveMotorZIP.show()
+    basic.pause(500)
+    moveMotorZIP.set_zip_led_color(1,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
+    moveMotorZIP.set_zip_led_color(2,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.RED))
+    moveMotorZIP.show()
+    basic.pause(500)
+def lighteft():
+    moveMotorZIP.set_zip_led_color(1,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
+    moveMotorZIP.set_zip_led_color(2,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.RED))
+    moveMotorZIP.set_zip_led_color(0,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.YELLOW))
+    moveMotorZIP.set_zip_led_color(3,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.YELLOW))
+    moveMotorZIP.show()
+    basic.pause(500)
+    moveMotorZIP.set_zip_led_color(0,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
+    moveMotorZIP.set_zip_led_color(3,
+        Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.RED))
+    moveMotorZIP.show()
+    basic.pause(500)
 
-def on_received_string(receivedString):
-    global lightleft2, lightright2
-    if receivedString == "forward":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 50)
-    elif receivedString == "left":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.LEFT, 50)
-    elif receivedString == "backward":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE, 50)
-    elif receivedString == "right":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.RIGHT, 50)
-    elif receivedString == "lightleft":
-        lightleft2 = not (lightleft2)
-        lightleft()
-    elif receivedString == "lightright":
-        lightright2 = not (lightright2)
-        lightright()
-radio.on_received_string(on_received_string)
+def on_received_value(name, value):
+    global lightleft, lightright
+    if name == "stop":
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 0)
+    elif name == "left":
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.LEFT, (value - 824) / 2)
+    elif name == "backward":
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE,
+            (value * -1 + 200) / 2)
+    elif name == "right":
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.RIGHT,
+            (value * -1 + 200) / 2)
+    elif name == "lightleft":
+        lightleft = not (lightleft)
+        lighteft()
+    elif name == "lightright":
+        lightright = not (lightright)
+        lightright2()
+    elif name == "forward":
+        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD,
+            (value - 824) / 2)
+radio.on_received_value(on_received_value)
 
-lightright2 = False
-lightleft2 = False
+lightleft = False
+lightright = False
 moveMotorZIP: Kitronik_Move_Motor.MoveMotorZIP = None
 radio.set_group(44)
 moveMotorZIP = Kitronik_Move_Motor.create_move_motor_zipled(4)
+lightright = False
+lightleft = False
+Kitronik_Move_Motor.turn_radius(Kitronik_Move_Motor.TurnRadii.TIGHT)
 
-def on_in_background():
-    led.plot(0, 0)
-    if lightleft2:
-        led.plot(1, 0)
-        while True:
-            lightleft()
-    elif lightright2:
-        while True:
-            lightright()
-        led.plot(10, 1)
-control.in_background(on_in_background)
+
+
+
+
+#Let's go ca fonctionne
