@@ -34,7 +34,7 @@ def lighteft():
     basic.pause(500)
 
 def on_received_value(name, value):
-    global lightleft, lightright
+    global lightright
     if name == "stop":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 0)
     elif name == "left":
@@ -46,17 +46,24 @@ def on_received_value(name, value):
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.RIGHT,
             (value * -1 + 200) / 2)
     elif name == "lightleft":
-        lightleft = not (lightleft)
-        lighteft()
+        led.plot(0, 0)
     elif name == "lightright":
         lightright = not (lightright)
         lightright2()
     elif name == "forward":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD,
             (value - 824) / 2)
+    elif name == "klaxon":
+        Kitronik_Move_Motor.beep_horn()
+    elif name == "autodestruction":
+        Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
+            Kitronik_Move_Motor.MotorDirection.FORWARD,
+            100)
+        Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
+            Kitronik_Move_Motor.MotorDirection.REVERSE,
+            100)
 radio.on_received_value(on_received_value)
 
-lightleft = False
 lightright = False
 moveMotorZIP: Kitronik_Move_Motor.MoveMotorZIP = None
 radio.set_group(44)
