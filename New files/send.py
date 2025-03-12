@@ -1,9 +1,9 @@
 def on_button_pressed_a():
-    radio.send_value("lightleft", 0)
+    radio.send_value("lightleft", 1)
 input.on_button_pressed(Button.A, on_button_pressed_a)
 
 def on_button_pressed_b():
-    radio.send_value("lightright", 0)
+    radio.send_value("lightright", 1)
 input.on_button_pressed(Button.B, on_button_pressed_b)
 
 radio.set_group(44)
@@ -24,10 +24,9 @@ while True:
     b = bitcommander.read_button(BCButtons.BLUE)
     # Valeur True ou False
     v = bitcommander.read_button(BCButtons.GREEN)
-    print("x=" + ("" + ("" + ("" + ("" + str(x))))) + "  y=" + ("" + ("" + ("" + ("" + str(y))))) + "  d=" + ("" + ("" + ("" + ("" + str(d))))))
+    print("x=" + ("" + ("" + ("" + str(x)))) + "  y=" + ("" + ("" + ("" + str(y)))) + "  d=" + ("" + ("" + ("" + str(d)))))
     if x < 700 and y < 700:
         if x > 300 and y > 300:
-            radio.send_value("stop", 0)
             basic.clear_screen()
             basic.show_leds("""
                 . . . . .
@@ -36,63 +35,34 @@ while True:
                 . . . . .
                 . . . . .
                 """)
-            
+            radio.send_value("stop", 1)
     if x < 200:
-        
-        radio.send_value("left", x)
         basic.show_arrow(ArrowNames.WEST)
+        radio.send_value("left", x)
     if x > 824:
-        
-        radio.send_value("right", x)
         basic.show_arrow(ArrowNames.EAST)
+        radio.send_value("right", x)
     if y < 200:
-        
-        radio.send_value("backward", y)
         basic.show_arrow(ArrowNames.SOUTH)
+        radio.send_value("backward", y)
     if y > 824:
         basic.show_arrow(ArrowNames.NORTH)
         radio.send_value("forward", y)
-    if d > 100:
-        radio.send_value("autopilot", 0)
-        while d > 100:
-            d = bitcommander.read_dial()
-            a = randint(0, 5)
-            d = bitcommander.read_dial()
-            if a == 0:
-                radio.send_value("stop", 0)
-                d = bitcommander.read_dial()
-            if a == 1:
-                radio.send_value("forward", randint(824, 1024))
-                d = bitcommander.read_dial()
-            if a == 2:
-                radio.send_value("backward", randint(0, 200))
-                d = bitcommander.read_dial()
-            if a == 3:
-                radio.send_value("left", randint(0, 200))
-                d = bitcommander.read_dial()
-            if a == 4:
-                radio.send_value("right", randint(824, 1024))
-                d = bitcommander.read_dial()
-            d = bitcommander.read_dial()
-            basic.pause(5000)
-            d = bitcommander.read_dial()
+    if d > 10:
+        bitcommander.set_led_color(Math.idiv(d, 3))
+        bitcommander.led_show()
     else:
         bitcommander.led_clear()
     if r:
-        radio.send_value("autodestrcution", 1)
         basic.show_string("R")
-        
-    if j:
-        radio.send_value("lightleft", 1)
-        basic.show_string("J")
-        
-    if b:
-        radio.send_value("lightright", 1)
-        basic.show_string("B")
-        
-    if v:
-        radio.send_value("autopilot", 1)
-        basic.show_string("V")
-        
-    if t:
         radio.send_value("klaxon", 1)
+    if j:
+        basic.show_string("J")
+        radio.send_string("J")
+    if b:
+        basic.show_string("B")
+        radio.send_string("B")
+    if v:
+        basic.show_string("V")
+        radio.send_string("V")
+    

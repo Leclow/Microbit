@@ -1,3 +1,4 @@
+radio.set_group(1)
 def on_button_pressed_a():
     radio.send_value("lightleft", 0)
 input.on_button_pressed(Button.A, on_button_pressed_a)
@@ -6,7 +7,6 @@ def on_button_pressed_b():
     radio.send_value("lightright", 0)
 input.on_button_pressed(Button.B, on_button_pressed_b)
 
-radio.set_group(44)
 # ATTENTION : Ne pas oublier d'inclure l'extension BitCommander dans MakeCode !
 while True:
     x = bitcommander.read_joystick(BCJoystick.X)
@@ -27,7 +27,6 @@ while True:
     print("x=" + ("" + ("" + ("" + ("" + str(x))))) + "  y=" + ("" + ("" + ("" + ("" + str(y))))) + "  d=" + ("" + ("" + ("" + ("" + str(d))))))
     if x < 700 and y < 700:
         if x > 300 and y > 300:
-            radio.send_value("stop", 0)
             basic.clear_screen()
             basic.show_leds("""
                 . . . . .
@@ -36,19 +35,16 @@ while True:
                 . . . . .
                 . . . . .
                 """)
-            
+            radio.send_value("stop", 0)
     if x < 200:
-        
-        radio.send_value("left", x)
         basic.show_arrow(ArrowNames.WEST)
+        radio.send_value("left", x)
     if x > 824:
-        
-        radio.send_value("right", x)
         basic.show_arrow(ArrowNames.EAST)
+        radio.send_value("right", x)
     if y < 200:
-        
-        radio.send_value("backward", y)
         basic.show_arrow(ArrowNames.SOUTH)
+        radio.send_value("backward", y)
     if y > 824:
         basic.show_arrow(ArrowNames.NORTH)
         radio.send_value("forward", y)
@@ -79,20 +75,14 @@ while True:
     else:
         bitcommander.led_clear()
     if r:
-        radio.send_value("autodestrcution", 1)
         basic.show_string("R")
-        
+        radio.send_value("autodestrcution", 1)
     if j:
-        radio.send_value("lightleft", 1)
         basic.show_string("J")
-        
+        radio.send_value("lightleft", 1)
     if b:
-        radio.send_value("lightright", 1)
         basic.show_string("B")
-        
+        radio.send_value("lightright", 1)
     if v:
-        radio.send_value("autopilot", 1)
         basic.show_string("V")
-        
-    if t:
-        radio.send_value("klaxon", 1)
+        radio.send_string("V")
