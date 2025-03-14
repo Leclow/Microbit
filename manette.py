@@ -24,34 +24,45 @@ while True:
     b = bitcommander.read_button(BCButtons.BLUE)
     # Valeur True ou False
     v = bitcommander.read_button(BCButtons.GREEN)
-    print("x=" + ("" + ("" + ("" + ("" + str(x))))) + "  y=" + ("" + ("" + ("" + ("" + str(y))))) + "  d=" + ("" + ("" + ("" + ("" + str(d))))))
-    if x < 700 and y < 700:
-        if x > 300 and y > 300:
-            radio.send_value("stop", 0)
-            basic.clear_screen()
-            basic.show_leds("""
-                . . . . .
-                . . . . .
-                . . # . .
-                . . . . .
-                . . . . .
-                """)
-            
+    print("x=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(x)))))))) + "  y=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(y)))))))) + "  d=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(d)))))))))
+    if not (j or (r or (b or v))):
+        if x < 700 and y < 700:
+            if x > 300 and y > 300:
+                radio.send_value("stop", 0)
+                basic.clear_screen()
+                basic.show_leds("""
+                    . . . . .
+                    . . . . .
+                    . . # . .
+                    . . . . .
+                    . . . . .
+                    """)
     if x < 200:
-        
         radio.send_value("left", x)
         basic.show_arrow(ArrowNames.WEST)
     if x > 824:
-        
         radio.send_value("right", x)
         basic.show_arrow(ArrowNames.EAST)
     if y < 200:
-        
         radio.send_value("backward", y)
         basic.show_arrow(ArrowNames.SOUTH)
     if y > 824:
         basic.show_arrow(ArrowNames.NORTH)
         radio.send_value("forward", y)
+    if r:
+        radio.send_value("autodestrcution", 1)
+        basic.show_string("R")
+    if j:
+        radio.send_value("klaxon", 15)
+        basic.show_string("J")
+    if b:
+        radio.send_value("lightright", 1)
+        basic.show_string("B")
+    if v:
+        radio.send_value("V", 1)
+        basic.show_string("V")
+    if t:
+        radio.send_value("klaxon", 1)
     if d > 100:
         radio.send_value("autopilot", 0)
         while d > 100:
@@ -59,7 +70,6 @@ while True:
             a = randint(0, 5)
             d = bitcommander.read_dial()
             if a == 0:
-                radio.send_value("stop", 0)
                 d = bitcommander.read_dial()
             if a == 1:
                 radio.send_value("forward", randint(824, 1024))
@@ -78,21 +88,3 @@ while True:
             d = bitcommander.read_dial()
     else:
         bitcommander.led_clear()
-    if r:
-        radio.send_value("autodestrcution", 1)
-        basic.show_string("R")
-        
-    if j:
-        radio.send_value("lightleft", 1)
-        basic.show_string("J")
-        
-    if b:
-        radio.send_value("lightright", 1)
-        basic.show_string("B")
-        
-    if v:
-        radio.send_value("autopilot", 1)
-        basic.show_string("V")
-        
-    if t:
-        radio.send_value("klaxon", 1)
