@@ -18,24 +18,24 @@ def lightright2():
 
 def on_received_value(name, value):
     global autopilot
-    if name == "stop":
+    if name == "s":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 0)
-    elif name == "left":
+    elif name == "l":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.LEFT, (value - 824) / 2)
-    elif name == "backward":
+    elif name == "b":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE,
             (value * -1 + 200) / 2)
-    elif name == "right":
+    elif name == "r":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.RIGHT,
             (value * -1 + 200) / 2)
     elif name == "ll":
         lightleft2()
     elif name == "lr":
         lightright2()
-    elif name == "forward":
+    elif name == "f":
         Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD,
             (value - 824) / 2)
-    elif name == "klaxon":
+    elif name == "k":
         Kitronik_Move_Motor.beep_horn()
     elif name == "trump":
         Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
@@ -44,7 +44,7 @@ def on_received_value(name, value):
         Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
             Kitronik_Move_Motor.MotorDirection.REVERSE,
             100)
-    elif name == "capteur":
+    elif name == "c":
         autopilot = not (autopilot)
 radio.on_received_value(on_received_value)
 

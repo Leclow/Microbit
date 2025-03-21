@@ -1,9 +1,9 @@
 def on_button_pressed_a():
-    radio.send_value("lightleft", 0)
+    radio.send_value("ll", 0)
 input.on_button_pressed(Button.A, on_button_pressed_a)
 
 def on_button_pressed_b():
-    radio.send_value("lightright", 0)
+    radio.send_value("lr", 0)
 input.on_button_pressed(Button.B, on_button_pressed_b)
 
 radio.set_group(44)
@@ -38,31 +38,31 @@ while True:
                     . . . . .
                     """)
     if x < 200:
-        radio.send_value("left", x)
+        radio.send_value("l", x)
         basic.show_arrow(ArrowNames.WEST)
     if x > 824:
-        radio.send_value("right", x)
+        radio.send_value("r", x)
         basic.show_arrow(ArrowNames.EAST)
     if y < 200:
-        radio.send_value("backward", y)
+        radio.send_value("b", y)
         basic.show_arrow(ArrowNames.SOUTH)
     if y > 824:
         basic.show_arrow(ArrowNames.NORTH)
-        radio.send_value("forward", y)
+        radio.send_value("f", y)
     if r:
-        radio.send_value("autodestrcution", 1)
+        radio.send_value("trump", 1)
         basic.show_string("R")
     if j:
-        radio.send_value("klaxon", 15)
+        radio.send_value("", 15)
         basic.show_string("J")
     if b:
-        radio.send_value("lightright", 1)
+        radio.send_value("", 1)
         basic.show_string("B")
     if v:
         radio.send_value("V", 1)
         basic.show_string("V")
     if t:
-        radio.send_value("klaxon", 1)
+        radio.send_value("k", 1)
     if d > 100:
         radio.send_value("autopilot", 0)
         while d > 100:
@@ -72,16 +72,16 @@ while True:
             if a == 0:
                 d = bitcommander.read_dial()
             if a == 1:
-                radio.send_value("forward", randint(824, 1024))
+                radio.send_value("f", randint(824, 1024))
                 d = bitcommander.read_dial()
             if a == 2:
-                radio.send_value("backward", randint(0, 200))
+                radio.send_value("b", randint(0, 200))
                 d = bitcommander.read_dial()
             if a == 3:
-                radio.send_value("left", randint(0, 200))
+                radio.send_value("l", randint(0, 200))
                 d = bitcommander.read_dial()
             if a == 4:
-                radio.send_value("right", randint(824, 1024))
+                radio.send_value("r", randint(824, 1024))
                 d = bitcommander.read_dial()
             d = bitcommander.read_dial()
             basic.pause(5000)
