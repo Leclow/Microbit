@@ -17,6 +17,9 @@ def menu():
         j = bitcommander.read_button(BCButtons.YELLOW)
         b = bitcommander.read_button(BCButtons.BLUE)
         v = bitcommander.read_button(BCButtons.GREEN)
+        if not (j or (r or (b or v))):
+            basic.clear_screen()
+            basic.show_string(Mod)
         if r:
             Mod = 0
             basic.show_string(Mod)
