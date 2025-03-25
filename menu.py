@@ -1,68 +1,67 @@
+from jeux.MERGE import bataillenavale, chutedebrique, chutedevoiture, spaceinvader
+
+
 def menu():
-    # ATTENTION : Ne pas oublier d'inclure l'extension BitCommander dans MakeCode !
+    Mod = 0
+    allMods = ["car",
+           "badapple",
+           "bataillenavale",
+           "chute",
+           "floppy bird",
+           "game_of_life",
+           "pong",
+           "invaders",
+           "tetris"]
     while True:
-        x = bitcommander.read_joystick(BCJoystick.X)
-        # Valeur entre 0 et 1024
-        y = bitcommander.read_joystick(BCJoystick.Y)
-        # Valeur entre 0 et 1024
-        d = bitcommander.read_dial()
-        # Valeur entre 0 et 630
-        t = bitcommander.read_button(BCButtons.JOYSTICK)
-        # Valeur True ou False
         r = bitcommander.read_button(BCButtons.RED)
-        # Valeur True ou False
         j = bitcommander.read_button(BCButtons.YELLOW)
-        # Valeur True ou False
         b = bitcommander.read_button(BCButtons.BLUE)
-        # Valeur True ou False
         v = bitcommander.read_button(BCButtons.GREEN)
-        print("x=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(x))))))))))))) + "  y=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(y))))))))))))) + "  d=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(d))))))))))))))
-        if not (j or (r or (b or v))):
-            if x < 700 and y < 700:
-                if x > 300 and y > 300:
-                    radio.send_value("stop", 0)
-                    basic.clear_screen()
-                    basic.show_leds("""
-                        . . . . .
-                        . . . . .
-                        . . # . .
-                        . . . . .
-                        . . . . .
-                        """)
-        if x < 200:
-            radio.send_value("l", x)
-            basic.show_arrow(ArrowNames.WEST)
-        if x > 824:
-            radio.send_value("r", x)
-            basic.show_arrow(ArrowNames.EAST)
-        if y < 200:
-            radio.send_value("b", y)
-            basic.show_arrow(ArrowNames.SOUTH)
-        if y > 824:
-            basic.show_arrow(ArrowNames.NORTH)
-            radio.send_value("f", y)
         if r:
-            radio.send_value("trump", 1)
-            basic.show_string("R")
+            Mod = 0
+            basic.show_string(Mod)
+            # reset to car mod
         if j:
-            radio.send_value("ll", 15)
-            basic.show_string("J")
+            if Mod > 0:
+                Mod -= 1
+            else:
+                Mod = len(allMods)-1
+            basic.show_string(Mod)
+            # minus 1
         if b:
-            radio.send_value("lr", 1)
-            basic.show_string("B")
+            if Mod < len(allMods)-1:
+                Mod += 1
+            else:
+                Mod = 0
+            # add 1
+            basic.show_string(Mod)
         if v:
-            radio.send_value("V", 1)
-            basic.show_string("V")
-        if t:
-            radio.send_value("k", 1)
-        if d > 100:
-            basic.show_string("D")
+            # launch the game
+            if Mod == 0:
+                CarMod()
+            elif Mod == 1:
+                badapple()
+            elif Mod == 2:
+                bataillenavale()
+            elif Mod == 3:
+                chutedebrique()
+            elif Mod == 4:
+                chutedevoiture()
+            elif Mod == 5:
+                floppybird()
+            elif Mod == 6:
+                gameoflife()
+            elif Mod == 7:
+                pongsolo()
+            elif Mod == 8:
+                spaceinvader()
+            elif Mod == 9:
+                tetris()
         else:
             bitcommander.led_clear()
 
 
-def CarMode():
-    # ATTENTION : Ne pas oublier d'inclure l'extension BitCommander dans MakeCode !
+def CarMod():
     while True:
         x = bitcommander.read_joystick(BCJoystick.X)
         # Valeur entre 0 et 1024
@@ -79,7 +78,7 @@ def CarMode():
         b = bitcommander.read_button(BCButtons.BLUE)
         # Valeur True ou False
         v = bitcommander.read_button(BCButtons.GREEN)
-        print("x=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(x))))))))))))) + "  y=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(y))))))))))))) + "  d=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(d))))))))))))))
+        #print("x=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(x))))))))))))) + "  y=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(y))))))))))))) + "  d=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(d))))))))))))))
         if not (j or (r or (b or v))):
             if x < 700 and y < 700:
                 if x > 300 and y > 300:
@@ -144,21 +143,5 @@ def CarMode():
         else:
             bitcommander.led_clear()
 
-
-def Games():
-    pass
-nextm = False
-previousm = False
 radio.set_group(44)
-currentMode = 0
-currentGames = "badapple"
-mode = ["c", "g"]
-allGames = ["badapple",
-    "bataillenavale",
-    "chute",
-    "floppy bird",
-    "game_of_life",
-    "pong",
-    "invaders",
-    "tetris"]
 menu()

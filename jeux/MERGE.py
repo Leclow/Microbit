@@ -25,7 +25,7 @@ def badapple():
 
 def bataillenavale():
     radio.on()  # Activer la radio
-    radio.set_group(1)  # Choisir un groupe pour éviter les interférences
+    radio.set_group(44)  # Choisir un groupe pour éviter les interférences
 
 # Initialisation des variables
     player = 1  # 1 ou 2
