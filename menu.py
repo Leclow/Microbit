@@ -18,6 +18,7 @@ def menu():
         b = bitcommander.read_button(BCButtons.BLUE)
         v = bitcommander.read_button(BCButtons.GREEN)
         if not (j or (r or (b or v))):
+            #To know the selected Mod
             basic.clear_screen()
             basic.show_string(Mod)
         if r:
