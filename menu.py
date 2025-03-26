@@ -17,20 +17,19 @@ def menu():
         j = bitcommander.read_button(BCButtons.YELLOW)
         b = bitcommander.read_button(BCButtons.BLUE)
         v = bitcommander.read_button(BCButtons.GREEN)
-        if not (j or (r or (b or v))):
+        if not (j or (r or b)):
             #To know the selected Mod
             basic.clear_screen()
-            basic.show_string(Mod)
-        if r:
+            basic.show_number(Mod)
+        if v:
             Mod = 0
-            basic.show_string(Mod)
             # reset to car mod
         if j:
             if Mod > 0:
                 Mod -= 1
             else:
                 Mod = len(allMods)-1
-            basic.show_string(Mod)
+            basic.show_number(Mod)
             # minus 1
         if b:
             if Mod < len(allMods)-1:
@@ -38,29 +37,11 @@ def menu():
             else:
                 Mod = 0
             # add 1
-            basic.show_string(Mod)
-        if v:
+            basic.show_number(Mod)
+        if r:
             # launch the game
             if Mod == 0:
                 CarMod()
-            elif Mod == 1:
-                badapple()
-            elif Mod == 2:
-                bataillenavale()
-            elif Mod == 3:
-                chutedebrique()
-            elif Mod == 4:
-                chutedevoiture()
-            elif Mod == 5:
-                floppybird()
-            elif Mod == 6:
-                gameoflife()
-            elif Mod == 7:
-                pongsolo()
-            elif Mod == 8:
-                spaceinvader()
-            elif Mod == 9:
-                tetris()
         else:
             bitcommander.led_clear()
 
@@ -86,7 +67,7 @@ def CarMod():
         if not (j or (r or (b or v))):
             if x < 700 and y < 700:
                 if x > 300 and y > 300:
-                    radio.send_value("stop", 0)
+                    radio.send_value("s", 0)
                     basic.clear_screen()
                     basic.show_leds("""
                         . . . . .
@@ -107,6 +88,8 @@ def CarMod():
         if y > 824:
             basic.show_arrow(ArrowNames.NORTH)
             radio.send_value("f", y)
+        if v:
+            menu()
         if r:
             radio.send_value("trump", 1)
             basic.show_string("R")
@@ -116,12 +99,11 @@ def CarMod():
         if b:
             radio.send_value("lr", 1)
             basic.show_string("B")
-        if v:
-            radio.send_value("V", 1)
-            basic.show_string("V")
+        if bitcommander.read_button(BCButtons.GREEN):
+            menu()
         if t:
             radio.send_value("k", 1)
-        if d > 100:
+        if d > 100 and d < 300:
             radio.send_value("autopilot", 0)
             while d > 100:
                 d = bitcommander.read_dial()
@@ -144,8 +126,11 @@ def CarMod():
                 d = bitcommander.read_dial()
                 basic.pause(5000)
                 d = bitcommander.read_dial()
+        if d > 300:
+            radio.send_value("line", 0)
         else:
             bitcommander.led_clear()
+
 
 radio.set_group(44)
 menu()

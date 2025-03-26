@@ -88,3 +88,11 @@ while True:
             d = bitcommander.read_dial()
     else:
         bitcommander.led_clear()
+
+
+
+
+    if d >= 300 and d<400:
+        radio.send_value("s", 0)
+    if d >= 400:
+        radio.send_value("line", 0)
