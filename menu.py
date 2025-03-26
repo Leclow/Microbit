@@ -1,11 +1,9 @@
-from jeux.MERGE import bataillenavale, chutedebrique, chutedevoiture, spaceinvader
-
 
 def menu():
     Mod = 0
     allMods = ["car",
            "badapple",
-           "bataillenavale",
+           "chutev",
            "chute",
            "floppy bird",
            "game_of_life",
@@ -49,21 +47,13 @@ def menu():
 def CarMod():
     while True:
         x = bitcommander.read_joystick(BCJoystick.X)
-        # Valeur entre 0 et 1024
         y = bitcommander.read_joystick(BCJoystick.Y)
-        # Valeur entre 0 et 1024
         d = bitcommander.read_dial()
-        # Valeur entre 0 et 630
         t = bitcommander.read_button(BCButtons.JOYSTICK)
-        # Valeur True ou False
         r = bitcommander.read_button(BCButtons.RED)
-        # Valeur True ou False
         j = bitcommander.read_button(BCButtons.YELLOW)
-        # Valeur True ou False
         b = bitcommander.read_button(BCButtons.BLUE)
-        # Valeur True ou False
         v = bitcommander.read_button(BCButtons.GREEN)
-        #print("x=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(x))))))))))))) + "  y=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(y))))))))))))) + "  d=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(d))))))))))))))
         if not (j or (r or (b or v))):
             if x < 700 and y < 700:
                 if x > 300 and y > 300:
@@ -89,6 +79,7 @@ def CarMod():
             basic.show_arrow(ArrowNames.NORTH)
             radio.send_value("f", y)
         if v:
+            radio.send_value("s", 1)
             menu()
         if r:
             radio.send_value("trump", 1)
@@ -103,7 +94,7 @@ def CarMod():
             menu()
         if t:
             radio.send_value("k", 1)
-        if d > 100 and d < 300:
+        if d > 100 :
             radio.send_value("autopilot", 0)
             while d > 100:
                 d = bitcommander.read_dial()
@@ -126,11 +117,7 @@ def CarMod():
                 d = bitcommander.read_dial()
                 basic.pause(5000)
                 d = bitcommander.read_dial()
-        if d > 300:
-            radio.send_value("line", 0)
         else:
             bitcommander.led_clear()
-
-
 radio.set_group(44)
 menu()
