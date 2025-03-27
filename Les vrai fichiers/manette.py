@@ -24,7 +24,6 @@ while True:
     b = bitcommander.read_button(BCButtons.BLUE)
     # Valeur True ou False
     v = bitcommander.read_button(BCButtons.GREEN)
-    print("x=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(x)))))))) + "  y=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(y)))))))) + "  d=" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str(d)))))))))
     if not (j or (r or (b or v))):
         if x < 700 and y < 700:
             if x > 300 and y > 300:

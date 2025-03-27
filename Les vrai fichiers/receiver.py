@@ -1,4 +1,4 @@
-def lightright2():
+def lightright():
     moveMotorZIP.set_zip_led_color(0,
         Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
     moveMotorZIP.set_zip_led_color(3,
@@ -18,39 +18,45 @@ def lightright2():
 
 def on_received_value(name, value):
     global capteur
-    if name == "s":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 0)
-    elif name == "l":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.LEFT, (value - 824) / 2)
-    elif name == "b":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE,
-            (value * -1 + 200) / 2)
-    elif name == "r":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.RIGHT,
-            (value * -1 + 200) / 2)
-    elif name == "ll":
-        lightleft2()
-    elif name == "lr":
-        lightright2()
-    elif name == "f":
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD,
-            (value - 824) / 2)
-    elif name == "k":
-        Kitronik_Move_Motor.beep_horn()
-    elif name == "line":
-        line = not(line)
-    elif name == "trump":
-        Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
-            Kitronik_Move_Motor.MotorDirection.FORWARD,
-            100)
-        Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
-            Kitronik_Move_Motor.MotorDirection.REVERSE,
-            100)
-    elif name == "c":
-        capteur = not(capteur)
+    if line == False:
+        if name == "s":
+            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 0)
+        elif name == "l":
+            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.LEFT, (value - 824) / 2)
+        elif name == "b":
+            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE,
+                (value * -1 + 200) / 2)
+        elif name == "r":
+            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.RIGHT,
+                (value * -1 + 200) / 2)
+        elif name == "ll":
+            lightleft()
+        elif name == "lr":
+            lightright()
+        elif name == "f":
+            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD,
+                (value - 824) / 2)
+        elif name == "k":
+            Kitronik_Move_Motor.beep_horn()
+        elif name == "line":
+            line = True
+            #line = not(line) seems no to work
+        elif name == "trump":
+            Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
+                Kitronik_Move_Motor.MotorDirection.FORWARD,
+                100)
+            Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
+                Kitronik_Move_Motor.MotorDirection.REVERSE,
+                100)
+        elif name == "c":
+            capteur = not(capteur)
+    elif:
+        if name == "line":
+            line == False
+
 radio.on_received_value(on_received_value)
 
-def lightleft2():
+def lightleft():
     moveMotorZIP.set_zip_led_color(1,
         Kitronik_Move_Motor.colors(Kitronik_Move_Motor.ZipLedColors.WHITE))
     moveMotorZIP.set_zip_led_color(2,
@@ -119,4 +125,5 @@ def on_forever():
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE, 10)
     if line:
         ligne()
+
 basic.forever(on_forever)
