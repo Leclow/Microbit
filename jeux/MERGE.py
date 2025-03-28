@@ -21,181 +21,30 @@ def badapple():
             if frame2 & 1:
                 led.toggle(4 - x2, 4 - y2)
             frame2 = frame2 >> 1
-    basic.pause(((1000 / 15.97) * count2) - (input.running_time() - now2))
-
-def bataillenavale():
-    radio.on()  # Activer la radio
-    radio.set_group(44)  # Choisir un groupe pour éviter les interférences
-
-# Initialisation des variables
-    player = 1  # 1 ou 2
-    cursor_x = 0  # Position du curseur X
-    cursor_y = 0  # Position du curseur Y
-    boats_p1 = [(0, 0)]  # Bateaux du joueur 1
-    boats_p2 = [(0, 0)]  # Bateaux du joueur 2
-    hits_p1 = [(0, 0)]  # Tirs réussis du joueur 1 (initialisé avec une position invalide)
-    hits_p2 = [(0, 0)]  # Tirs réussis du joueur 2 (initialisé avec une position invalide)
-    misses_p1 = [(0, 0)]  # Tirs manqués du joueur 1 (initialisé avec une position invalide)
-    misses_p2 = [(0, 0)]  # Tirs manqués du joueur 2 (initialisé avec une position invalide)
-    current_boat_size = 4  # Taille du bateau en cours de placement
-    boat_direction = 'H'  # H = Horizontal, V = Vertical
-    phase = 'placement'  # 'placement' ou 'tir'
-
-
-    def draw_cursor():
-        asic.clear_screen()
-
-    # Affiche tous les bateaux déjà placés
-        for i in range(count_elements(boats_p1)):
-            pos = boats_p1[i]
-            if pos != (0, 0):
-                led.plot_brightness(pos[0], pos[1], 50)
-
-        for i in range(count_elements(boats_p2)):
-            pos = boats_p2[i]
-            if pos != (0, 0):
-                led.plot_brightness(pos[0], pos[1], 50)
-
-    # Affiche le curseur ou le tir
-        if phase == 'placement':
-            for i in range(current_boat_size):
-                if boat_direction == 'H':
-                    cx = (cursor_x + i) % 5
-                    cy = cursor_y
-                else:  # Vertical
-                    cx = cursor_x
-                    cy = (cursor_y + i) % 5
-                led.plot_brightness(cx, cy, 255)
-        elif phase == 'tir':
-            led.plot_brightness(cursor_x, cursor_y, 255)
-
-    # Affichage des tirs réussis et manqués
-        for i in range(count_elements(hits_p1)):  
-            pos = hits_p1[i]
-            if pos != (0, 0):
-                led.plot_brightness(pos[0], pos[1], 150)
-
-        for i in range(count_elements(hits_p2)):  
-            pos = hits_p2[i]
-            if pos != (0, 0):
-                led.plot_brightness(pos[0], pos[1], 150)
-
-        for i in range(count_elements(misses_p1)):  
-            pos = misses_p1[i]
-            if pos != (0, 0):
-                led.plot_brightness(pos[0], pos[1], 25)
-
-        for i in range(count_elements(misses_p2)):  
-            pos = misses_p2[i]
-            if pos != (0, 0):
-                led.plot_brightness(pos[0], pos[1], 25)
-
-
-    def count_elements(lst):
-        count = 0
-        for _ in lst:
-            count += 1
-        return count
-
-
-    def count_boats(boat_list):
-        count = 0
-        for i in range(count_elements(boat_list)):
-            if boat_list[i] != (0, 0):
-                count += 1
-        return count
-
-
-    def place_boat():
-        global current_boat_size, boat_direction, phase
-        positions = []
-        for i in range(current_boat_size):
-            if boat_direction == 'H':
-                nx = (cursor_x + i) % 5
-                ny = cursor_y
-            else:  # Vertical
-                nx = cursor_x
-                ny = (cursor_y + i) % 5
-            positions.append((nx, ny))
-
-        if player == 1:
-            global boats_p1
-            boats_p1.extend(positions)
-            if current_boat_size == 0 and count_boats(boats_p1) >= 11:
-                switch_player()  # Passer au joueur 2
-                radio.send_string('switch')
-        else:
-            global boats_p2
-            boats_p2.extend(positions)
-            if current_boat_size == 0 and count_boats(boats_p2) >= 11:
-                phase = 'tir'
-                radio.send_string('ready')
-
-        if current_boat_size == 4:
-            current_boat_size = 3
-        elif current_boat_size == 3:
-            current_boat_size = 2
-        elif current_boat_size == 2:  # Dernier bateau placé
-            current_boat_size = 0
-
-
-    def switch_player():
-        global player
-        player = 2 if player == 1 else 1
-
-
-    def shoot():
-        message = 'shot:' + str(cursor_x) + ':' + str(cursor_y)
-        radio.send_string(message)
-     switch_player()
-
-    def on_received_string(receivedString):
-        global phase
-        if receivedString == 'switch':
-            switch_player()
-        elif receivedString == 'ready':
-            phase = 'tir'
-        elif receivedString.startswith('shot:'):
-            parts = receivedString.split(':')
-            x = int(parts[1])
-            y = int(parts[2])
-            if player == 1:
-                if (x, y) in boats_p1:
-                    hits_p2.append((x, y))
-                else:
-                    misses_p2.append((x, y))
-            else:
-                if (x, y) in boats_p2:
-                    hits_p1.append((x, y))
-                else:
-                    misses_p1.append((x, y))
-
-
-    radio.on_received_string(on_received_string)
-
-    while True:
-        draw_cursor()
-
-        if input.button_is_pressed(Button.A):
-            cursor_x = (cursor_x + 1) % 5
-            basic.pause(200)
-
-        if input.button_is_pressed(Button.B):
-            cursor_y = (cursor_y + 1) % 5
-            basic.pause(200)
-
-        if input.is_gesture(Gesture.SHAKE) and phase == 'placement':
-            boat_direction = 'V' if boat_direction == 'H' else 'H'
-
-        if input.logo_is_pressed():
-            if phase == 'placement' and current_boat_size > 0:
-                place_boat()
-            elif phase == 'tir':
-                shoot()
-            basic.pause(200)
-
-        basic.pause(100)
+        # si quelq'un lit, ça, vrm merci infiniment a reddit ! j'ai commencer a faire ça frame par frame, et j'ai vrm cru die...
+        # Nice de raconter sa vie :D
+        basic.pause(((1000 / 15.97) * count2) - (input.running_time() - now2))
+EnposY1 = 0
+EnposX1 = 0
+EnpoxY = 0
+EnposX = 0
+posY = 0
+posX = 0
+lancement1 = 0
+lancement = 0
+verif = 0
+verif = 0
 def chutedebrique():
+    EnposY1 = 0
+    EnposX1 = 0
+    EnpoxY = 0
+    EnposX = 0
+    posY = 0
+    posX = 0
+    lancement1 = 0
+    lancement = 0
+    verif = 0
+    verif = 0
     def on_button_pressed_a():
         global posX, posY
         if verif == 0:
@@ -210,24 +59,15 @@ def chutedebrique():
     def on_button_pressed_b():
         global posX, posY
         if verif == 0:
-           led.unplot(posX, posY)
-           posX += 1
-          if posX > 4:
-               posX += -1
+            led.unplot(posX, posY)
+            posX += 1
+            if posX > 4:
+                posX += -1
             posY += 0
             led.plot(posX, posY)
     input.on_button_pressed(Button.B, on_button_pressed_b)
 
-    EnposY1 = 0
-    EnposX1 = 0
-    EnpoxY = 0
-    EnposX = 0
-    posY = 0
-    posX = 0
-    lancement1 = 0
-    lancement = 0
-    verif = 0
-    verif = 0
+
     if verif == 0:
         lancement = 0
         lancement1 = 0
@@ -280,7 +120,7 @@ def chutedebrique():
     def on_forever3():
         global lancement1, EnposX1, EnposY1, EnpoxY
         basic.pause(200)
-         if verif == 0:
+        if verif == 0:
             if lancement1 == 1 or lancement1 == 3:
                 if lancement1 == 1:
                     lancement1 += 2
@@ -294,7 +134,17 @@ def chutedebrique():
                         led.plot(EnposX1, EnposY1)
                     lancement1 = 1
     basic.forever(on_forever3)
+
 def chutedevoiture():
+    EnposY1 = 0
+    EnposX1 = 0
+    EnpoxY = 0
+    EnposX = 0
+    posY = 0
+    posX = 0
+    lancement1 = 0
+    lancement = 0
+    verif = 0
     def on_button_pressed_a():
         global posX, posY
         if verif == 0:
@@ -317,15 +167,7 @@ def chutedevoiture():
             led.plot(posX, posY)
     input.on_button_pressed(Button.B, on_button_pressed_b)
 
-    EnposY1 = 0
-    EnposX1 = 0
-    EnpoxY = 0
-    EnposX = 0
-    posY = 0
-    posX = 0
-    lancement1 = 0
-    lancement = 0
-    verif = 0
+
     basic.show_leds("""
         . # . # .
         . # . # .
@@ -402,138 +244,15 @@ def chutedevoiture():
                             led.plot(EnposX1, EnposY1)
                     lancement1 = 1
     basic.forever(on_forever3)
-def floppybird()
-    def on_button_pressed_a():
-        zozio.change(LedSpriteProperty.Y, 1)
-    input.on_button_pressed(Button.A, on_button_pressed_a)
-
-    def on_button_pressed_b():
-        zozio.change(LedSpriteProperty.Y, -1)
-    input.on_button_pressed(Button.B, on_button_pressed_b)
-
-    emptyObstacleY = 0
-    hole_size = 1
-    ticks = 0
-    zozio: game.LedSprite = None
-    index = 0
-    obstacles: List[game.LedSprite] = []
-    zozio = game.create_sprite(0, 2)
-    zozio.set(LedSpriteProperty.BLINK, 300)
-
-    def on_forever():
-        zozio.change(LedSpriteProperty.Y, 1)
-        basic.pause(1000)
-    basic.forever(on_forever)
-
-    def on_forever2():
-        global emptyObstacleY, hole_size, ticks
-
-        while len(obstacles) > 0 and obstacles[0].get(LedSpriteProperty.X) == 0:
-            obstacles.remove_at(0).delete()
-    
-        for obstacle2 in obstacles:
-            obstacle2.change(LedSpriteProperty.X, -1)
-        
-        if ticks % 3 == 0:
-            emptyObstacleY = randint(0, 3) 
-            hole_size = randint(1, 2) 
-
-            for index2 in range(5):
-                if not (emptyObstacleY <= index2 < emptyObstacleY + hole_size):
-                    obstacles.append(game.create_sprite(4, index2))
-
-
-        for obstacle3 in obstacles:
-            if obstacle3.get(LedSpriteProperty.X) == zozio.get(LedSpriteProperty.X) and obstacle3.get(LedSpriteProperty.Y) == zozio.get(LedSpriteProperty.Y):
-                game.game_over()
-
-        ticks += 1
-        basic.pause(1000)
-
-    basic.forever(on_forever2)
-def gameoflife():
-    def func_randomize_world():
-        for cell_id in range(25):
-            world[cell_id] = randint(0, 1)
-    def func_init():
-        global generation, world, world2, friends_matrix
-        generation = 0
-        world = [25]
-        world2 = [25]
-        friends_matrix = [[-1, -1, -6],
-            [0, -1, -5],
-            [1, -1, -4],
-            [-1, 0, -1],
-            [1, 0, 1],
-            [-1, 1, 4],
-            [0, 1, 5],
-            [1, 1, 6]]
-    def func_render():
-        basic.clear_screen()
-        for cell_id2 in range(25):
-            if world[cell_id2]:
-                led.plot(cell_id2 - 5 * abs(Math.idiv(cell_id2, 5)),
-                    abs(Math.idiv(cell_id2, 5)))
-    def func_next_generation():
-        global friends, target_cell_x, target_cell_y, target_cell_id, new_cell, generation
-        for cell_id3 in range(25):
-            friends = 0
-            for offset in friends_matrix:
-                target_cell_x = cell_id3 - 5 * abs(Math.idiv(cell_id3, 5)) + offset[0]
-                target_cell_y = abs(Math.idiv(cell_id3, 5)) + offset[1]
-                target_cell_id = cell_id3 + offset[2]
-                if target_cell_x >= 0 and target_cell_x < 5 and (target_cell_y >= 0 and target_cell_y < 5):
-                    if world[target_cell_id]:
-                        friends += 1
-            new_cell = 0
-            if world[cell_id3]:
-                if friends < 2 or friends > 3:
-                    new_cell = 0
-                else:
-                    new_cell = 1
-            else:
-                if friends == 3:
-                    new_cell = 1
-            world2[cell_id3] = new_cell
-        generation += 1
-
-    def on_button_pressed_a():
-        func_randomize_world()
-        func_render()
-    input.on_button_pressed(Button.A, on_button_pressed_a)
-
-    def on_button_pressed_ab():
-        basic.show_number(generation)
-    input.on_button_pressed(Button.AB, on_button_pressed_ab)
-
-    def on_button_pressed_b():
-        func_next_generation()
-        func_swap_worlds()
-        func_render()
-    input.on_button_pressed(Button.B, on_button_pressed_b)
-
-    def func_swap_worlds():
-        for cell_id4 in range(25):
-            world[cell_id4] = world2[cell_id4]
-    new_cell = 0
-    target_cell_id = 0
-    target_cell_y = 0
-    target_cell_x = 0
-    friends = 0
-    friends_matrix: List[List[number]] = []
-    world2: List[number] = []
-    generation = 0
-    world: List[number] = []
-    func_init()
-    func_randomize_world()
-    func_render()
-
-    def on_forever():
-        func_next_generation()
-        func_swap_worlds()
-        func_render()
-        basic.pause(1000)
-    basic.forever(on_forever)
+bar_x = 0
+point = 0
+interval = 0
+interval_step = 0
+ball_x = 0
+ball_y = 0
+ball_dx = 0
+ball_dy = 0
+in_game = False
 def pongsolo():
     bar_x = 0
     point = 0
@@ -603,7 +322,17 @@ def pongsolo():
                 game.set_score(point)
                 game.game_over()
     basic.forever(on_forever)
-def spaceinvader():
+
+Enemy2: game.LedSprite = None
+Enemy: game.LedSprite = None
+shoot: game.LedSprite = None
+
+
+
+def spaceinvad():
+    player: game.LedSprite = None
+    player = game.create_sprite(2, 4)
+    shoot: game.LedSprite = None
     def on_button_pressed_a():
         player.move(-1)
     input.on_button_pressed(Button.A, on_button_pressed_a)
@@ -629,11 +358,10 @@ def spaceinvader():
         player.move(1)
     input.on_button_pressed(Button.B, on_button_pressed_b)
 
-    Enemy2: game.LedSprite = None
-    Enemy: game.LedSprite = None
-    shoot: game.LedSprite = None
-    player: game.LedSprite = None
-    player = game.create_sprite(2, 4)
+    
+    
+    
+    
 
     def on_forever():
         global Enemy
@@ -663,148 +391,3 @@ def spaceinvader():
             player.delete()
             game.game_over()
     basic.forever(on_forever3)
-def tetris():
-    """
-
-    Sets the speed of the moving LED and has a 1 second pause before the LED falls
-
-    """
-    # Checks if the game is over (a column is full at the top row). If the column is full, then GAME OVER!!!!
-    def checkGameOver():
-        for col5 in range(5):
-            if led.point(col5, 0):
-                gameOver()
-                return
-    # When the A button is pressed, move the LED left by one position.
-
-    def on_button_pressed_a():
-        global x
-        if x > 0 and not (led.point(x - 1, y)):
-            # Check if the left position is empty
-            led.unplot(x, y)
-            x += 0 - 1
-            led.plot(x, y)
-    input.on_button_pressed(Button.A, on_button_pressed_a)
-
-    # This function handles the row clearing for when a row is full. If it is full, the row flashes and you gain 1 score.
-    def clearFullRows():
-        global fullRow, score
-        for row in range(5):
-            fullRow = True
-            for col in range(5):
-                if not (led.point(col, row)):
-                    fullRow = False
-                    break
-            if fullRow:
-                flashRow(row)
-                for col2 in range(5):
-                    led.unplot(col2, row)
-                score += 1
-                r = row
-                while r > 0:
-                    for c in range(5):
-                        if led.point(c, r - 1):
-                            led.plot(c, r)
-                        else:
-                            led.unplot(c, r)
-                    r += 0 - 1
-        checkGameOver()
-    # This function flashes a row before clearing it.
-    def flashRow(row2: number):
-        for index in range(3):
-            for col3 in range(5):
-                led.plot(col3, row2)
-            basic.pause(100)
-            for col4 in range(5):
-                led.unplot(col4, row2)
-            basic.pause(100)
-    # Displays a game-over screen and stops the game with also showing what your score was.
-    def gameOver():
-        basic.clear_screen()
-        basic.show_string("GAME OVER SCORE")
-        basic.show_string("" + str(score))
-        # Restart the game after displaying "GAME OVER".
-        control.reset()
-    # When the B button is pressed, move the LED right by one position.
-
-    def on_button_pressed_b():
-        global x
-        if x < 4 and not (led.point(x + 1, y)):
-            # Check if the right position is empty
-            led.unplot(x, y)
-            x += 1
-            led.plot(x, y)
-    input.on_button_pressed(Button.B, on_button_pressed_b)
-
-    score = 0
-    fullRow = False
-    y = 0
-    x = 0
-    x = 2
-    speed = 500
-    basic.clear_screen()
-    basic.pause(1000)
-    # Handles the LED falling down the grid.
-
-    def on_forever():
-        global y, x
-        led.plot(x, y)
-        basic.pause(speed)
-        # If the falling LED is not at the bottom and the space below it is empty, move it down.
-        # If the falling LED reaches the floor or encounters another LED, stop the fall.
-        # Reset x to the middle position after falling
-        if y < 4 and not (led.point(x, y + 1)):
-            led.unplot(x, y)
-            y += 1
-        else:
-            clearFullRows()
-            y = 0
-            x = 2
-        # Prevent the falling LED from moving past another LED to the left or right when on the floor.
-        if y == 4:
-            # Prevent movement past LED on left
-            if x > 0 and led.point(x - 1, y):
-                x = x
-            # Prevent movement past LED on right
-            if x < 4 and led.point(x + 1, y):
-                x = x
-    basic.forever(on_forever)
-
-    # Plays the Tetris theme song forever.
-
-    def on_forever2():
-        music.play_tone(330, music.beat(BeatFraction.WHOLE))
-        music.play_tone(247, music.beat(BeatFraction.HALF))
-        music.play_tone(262, music.beat(BeatFraction.HALF))
-        music.play_tone(294, music.beat(BeatFraction.WHOLE))
-        music.play_tone(262, music.beat(BeatFraction.HALF))
-        music.play_tone(247, music.beat(BeatFraction.HALF))
-        music.play_tone(220, music.beat(BeatFraction.WHOLE))
-        music.play_tone(220, music.beat(BeatFraction.HALF))
-        music.play_tone(262, music.beat(BeatFraction.HALF))
-        music.play_tone(330, music.beat(BeatFraction.WHOLE))
-        music.play_tone(294, music.beat(BeatFraction.HALF))
-        music.play_tone(262, music.beat(BeatFraction.HALF))
-        music.play_tone(247, music.beat(BeatFraction.WHOLE))
-        music.play_tone(247, music.beat(BeatFraction.HALF))
-        music.play_tone(262, music.beat(BeatFraction.HALF))
-        music.play_tone(294, music.beat(BeatFraction.WHOLE))
-        music.play_tone(330, music.beat(BeatFraction.WHOLE))
-        music.play_tone(262, music.beat(BeatFraction.WHOLE))
-        music.play_tone(220, music.beat(BeatFraction.WHOLE))
-        music.play_tone(220, music.beat(BeatFraction.WHOLE))
-        basic.pause(400)
-        music.play_tone(294, music.beat(BeatFraction.WHOLE))
-        music.play_tone(349, music.beat(BeatFraction.HALF))
-        music.play_tone(440, music.beat(BeatFraction.HALF))
-        music.play_tone(440, music.beat(BeatFraction.HALF))
-        music.play_tone(392, music.beat(BeatFraction.HALF))
-        music.play_tone(349, music.beat(BeatFraction.HALF))
-        music.play_tone(330, music.beat(BeatFraction.WHOLE))
-        music.play_tone(262, music.beat(BeatFraction.WHOLE))
-        music.play_tone(330, music.beat(BeatFraction.WHOLE))
-        music.play_tone(294, music.beat(BeatFraction.HALF))
-        music.play_tone(262, music.beat(BeatFraction.HALF))
-        music.play_tone(247, music.beat(BeatFraction.WHOLE))
-        music.play_tone(247, music.beat(BeatFraction.HALF))
-    basic.forever(on_forever2)

@@ -64,31 +64,58 @@ def lightleft():
 
 
 def ligne():
-    rightSensor = Kitronik_Move_Motor.read_sensor(Kitronik_Move_Motor.LfSensor.RIGHT)
-    leftSensor = Kitronik_Move_Motor.read_sensor(Kitronik_Move_Motor.LfSensor.LEFT)
-    sensorDifference = abs(leftSensor - rightSensor)
-    if sensorDifference > 10:
-        if leftSensor > rightSensor:
-            Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
-                                         Kitronik_Move_Motor.MotorDirection.FORWARD,
-                                         0)
-            Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
-                                         Kitronik_Move_Motor.MotorDirection.FORWARD,
-                                         30)
+    while True:
+        rightSensor = Kitronik_Move_Motor.read_sensor(Kitronik_Move_Motor.LfSensor.RIGHT)
+        leftSensor = Kitronik_Move_Motor.read_sensor(Kitronik_Move_Motor.LfSensor.LEFT)
+        sensorDifference = abs(leftSensor - rightSensor)
+        basic.show_leds("""
+                    . . . . .
+                    . . . . .
+                    # # # # #
+                    . . . . .
+                    . . . . .
+                    """)
+        if sensorDifference > 10:
+            if leftSensor > rightSensor:
+                basic.show_leds("""
+                . . . . #
+                . . . . #
+                . . # . #
+                . . . . #
+                . . . . #
+                """)
+                Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
+                                            Kitronik_Move_Motor.MotorDirection.FORWARD,0)
+                Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
+                                            Kitronik_Move_Motor.MotorDirection.FORWARD,
+                                            30)
+            else:
+                basic.show_leds("""
+                            # . . . .
+                            # . . . .
+                            # . # . .
+                            # . . . .
+                            # . . . .
+                            """)
+                Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
+                                            Kitronik_Move_Motor.MotorDirection.FORWARD,
+                                            0)
+                Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
+                                            Kitronik_Move_Motor.MotorDirection.FORWARD,
+                                            30)
         else:
-            Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_RIGHT,
-                                         Kitronik_Move_Motor.MotorDirection.FORWARD,
-                                         0)
-            Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
-                                         Kitronik_Move_Motor.MotorDirection.FORWARD,
-                                         30)
-    else:
-        Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 30)
+            basic.show_leds("""
+                        . . # . .
+                        . . # . .
+                        . . # . .
+                        . . # . .
+                        . . # . .
+                        """)
+            Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.FORWARD, 30)
 
 
 line = False
 capteur = False
-moveMotorZIP: Kitronik_Move_Motor.MoveMotorZIP = None
 radio.set_group(44)
 moveMotorZIP = Kitronik_Move_Motor.create_move_motor_zipled(4)
 Kitronik_Move_Motor.turn_radius(Kitronik_Move_Motor.TurnRadii.TIGHT)
@@ -98,7 +125,7 @@ def on_forever():
     global capteur, line
     if capteur:
         Kitronik_Move_Motor.set_ultrasonic_units(Kitronik_Move_Motor.Units.CENTIMETERS)
-        if Kitronik_Move_Motor.measure() < 15:
+        if Kitronik_Move_Motor.measure() < 20:
             Kitronik_Move_Motor.move(Kitronik_Move_Motor.DriveDirections.REVERSE, 10)
     if line:
         ligne()

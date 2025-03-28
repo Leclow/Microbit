@@ -1,3 +1,79 @@
 Je ne pense pas que les jeux vont fonctionner (def dans un def)
 Il faudra peut-être aussi en recoder certain pour qu'ils utilisent les boutons Jaune et Bleu (et éventuellement Rouge) si A et B ne fonctionnent pas
 Il faut aussi rajouter le fait que le bouton vert permette de revenir au menu
+
+Les boutons:
+    r = bitcommander.read_button(BCButtons.RED) ------> a+b
+    j = bitcommander.read_button(BCButtons.YELLOW) ------> a
+    b = bitcommander.read_button(BCButtons.BLUE) ------> b
+    v = bitcommander.read_button(BCButtons.GREEN) ------> escape
+
+if v:
+    menu()
+
+if r:
+    a+b
+
+if j:
+    a
+
+if b:
+    b
+
+
+
+
+hole_size2 = 0
+ticks = 0
+obstacles: List[game.LedSprite] = []
+index = 0
+ticks2 = 0
+emptyObstacleY2 = 0
+emptyObstacleY = randint(0, 3)
+hole_size = randint(1, 2)
+def flappy():
+    v = bitcommander.read_button(BCButtons.GREEN)
+
+    if v:
+        menu()
+    global hole_size2
+    
+    def on_button_pressed_a():
+        zozio.change(LedSpriteProperty.Y, 1)
+    input.on_button_pressed(Button.A, on_button_pressed_a)
+    
+    
+    def on_button_pressed_b():
+        zozio.change(LedSpriteProperty.Y, -1)
+    input.on_button_pressed(Button.B, on_button_pressed_b)
+    
+    hole_size2 = 1
+    zozio = game.create_sprite(0, 2)
+    zozio.set(LedSpriteProperty.BLINK, 300)
+    
+    def on_forever():
+        zozio.change(LedSpriteProperty.Y, 1)
+        basic.pause(1000)
+    basic.forever(on_forever)
+    
+    
+    def on_forever2():
+        global emptyObstacleY2, hole_size2, ticks2
+        while len(obstacles) > 0 and obstacles[0].get(LedSpriteProperty.X) == 0:
+            obstacles.remove_at(0).delete()
+        for obstacle2 in obstacles:
+            obstacle2.change(LedSpriteProperty.X, -1)
+        if ticks2 % 3 == 0:
+            emptyObstacleY2 = randint(0, 3)
+            hole_size2 = randint(1, 2)
+            for index2 in range(5):
+                if not (emptyObstacleY2 <= index2 and index2 < emptyObstacleY2 + hole_size2):
+                    obstacles.append(game.create_sprite(4, index2))
+        for obstacle3 in obstacles:
+            if obstacle3.get(LedSpriteProperty.X) == zozio.get(LedSpriteProperty.X) and obstacle3.get(LedSpriteProperty.Y) == zozio.get(LedSpriteProperty.Y):
+                game.game_over()
+        ticks2 += 1
+        basic.pause(1000)
+    basic.forever(on_forever2)
+    
+
