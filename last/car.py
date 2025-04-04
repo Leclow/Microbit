@@ -32,7 +32,7 @@ def on_received_value(name, value):
                                  (value - 824) / 2)
     elif name == "k":
         Kitronik_Move_Motor.beep_horn()
-    elif name == "line":
+    elif name == "li":
         #line = True
         line = not(line)
     elif name == "ad":

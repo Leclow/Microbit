@@ -1,48 +1,3 @@
-def menu():
-    Mod = 0
-    allMods = ["car",
-           "badapple",
-           "chutev",
-           "chute",
-           "floppy bird",
-           "game_of_life",
-           "pong",
-           "invaders",
-           "tetris"]
-    while True:
-        r = bitcommander.read_button(BCButtons.RED)
-        j = bitcommander.read_button(BCButtons.YELLOW)
-        b = bitcommander.read_button(BCButtons.BLUE)
-        v = bitcommander.read_button(BCButtons.GREEN)
-        if not (j or (r or b)):
-            #To know the selected Mod
-            basic.clear_screen()
-            basic.show_number(Mod)
-        if v:
-            Mod = 0
-            # reset to car mod
-        if j:
-            if Mod > 0:
-                Mod -= 1
-            else:
-                Mod = len(allMods)-1
-            basic.show_number(Mod)
-            # minus 1
-        if b:
-            if Mod < len(allMods)-1:
-                Mod += 1
-            else:
-                Mod = 0
-            # add 1
-            basic.show_number(Mod)
-        if r:
-            # launch the game
-            if Mod == 0:
-                CarMod()
-        else:
-            bitcommander.led_clear()
-
-
 def CarMod():
     while True:
         x = bitcommander.read_joystick(BCJoystick.X)
@@ -78,8 +33,7 @@ def CarMod():
             basic.show_arrow(ArrowNames.NORTH)
             radio.send_value("f", y)
         if v:
-            radio.send_value("s", 1)
-            menu()
+            radio.send_value("li", 1)
         if r:
             radio.send_value("ad", 1)
             basic.show_string("R")
@@ -119,4 +73,4 @@ def CarMod():
         else:
             bitcommander.led_clear()
 radio.set_group(44)
-menu()
+CarMod()
