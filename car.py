@@ -32,10 +32,10 @@ def on_received_value(name, value):
                                  (value - 824) / 2)
     elif name == "k":
         Kitronik_Move_Motor.beep_horn()
-    elif name == "line":
+    elif name == "li":
         #line = True
         line = not(line)
-    elif name == "trump":
+    elif name == "ad":
         Kitronik_Move_Motor.motor_on(Kitronik_Move_Motor.Motors.MOTOR_LEFT,
                                      Kitronik_Move_Motor.MotorDirection.FORWARD,
                                      100)
@@ -87,7 +87,7 @@ def ligne():
 
 
 line = False
-capteur = False
+capteur = True
 moveMotorZIP: Kitronik_Move_Motor.MoveMotorZIP = None
 radio.set_group(44)
 moveMotorZIP = Kitronik_Move_Motor.create_move_motor_zipled(4)
